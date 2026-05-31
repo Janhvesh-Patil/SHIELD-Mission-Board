@@ -1,0 +1,21 @@
+# Maven build output
+target/
+
+# IntelliJ project files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Compiled Java
+*.class
+out/
+
+# Config with credentials - NEVER commit this
+src/main/resources/config.properties
+
+# Mac OS
+.DS_Store
+
+# VS Code
+.vscode/
