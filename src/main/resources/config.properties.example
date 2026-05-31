@@ -1,0 +1,3 @@
+db.url=jdbc:postgresql://localhost:5432/SHIELD_Missions
+db.user=YOUR_USERNAME
+db.password=YOUR_PASSWORD
