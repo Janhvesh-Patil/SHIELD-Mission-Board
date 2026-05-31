@@ -1,0 +1,5 @@
+package org.shield.model;
+
+public enum MissionCategory {
+    RESCUE, ASSASSINATION, INTEL_GATHERING, MONITORING, NEUTRALIZATION, ET_RESPONSE, RECOVERY
+}
