@@ -1,5 +1,5 @@
 package org.shield.model;
 
 public enum MissionStatus {
-    PENDING, ACTIVE, COMPLETE
+    PENDING, ACTIVE, COMPLETE;
 }

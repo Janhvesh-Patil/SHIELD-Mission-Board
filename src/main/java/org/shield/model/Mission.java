@@ -31,8 +31,8 @@ public class Mission {
         this.description = description;
         this.status = status;
         this.priority = priority;
-        this.heroId = heroId;
         this.category = category;
+        this.heroId = heroId;
         this.createdAt = createdAt;
         this.heroName = heroName;
     }
