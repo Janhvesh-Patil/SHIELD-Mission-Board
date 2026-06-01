@@ -60,7 +60,7 @@ Main.java
 
 ### `org.shield.server`
 
-This package knows everything about HTTP and nothing about missions or heroes.
+This package knows everything about HTTP and nothing about missions or agents.
 
 #### `HttpServer.java`
 - Creates a `ServerSocket` bound to a port (e.g. 8080)
@@ -143,8 +143,8 @@ Uses Gson to serialize Java objects → JSON strings.
 
 #### `HeroHandler.java`
 Simpler than MissionHandler. Likely just one method:
-- `getAll()` → returns the list of all heroes as JSON (used to populate the
-  hero dropdown in the frontend when assigning a hero to a mission)
+- `getAll()` → returns the list of all agents as JSON (used to populate the
+  agent dropdown in the frontend when assigning a agent to a mission)
 
 ---
 
@@ -159,7 +159,7 @@ One method per database operation:
 
 | Method | SQL it runs |
 |--------|------------|
-| `findAll()` | SELECT with JOIN to get hero name alongside mission |
+| `findAll()` | SELECT with JOIN to get agent name alongside mission |
 | `findById(int id)` | SELECT ... WHERE mission_id = ? |
 | `insert(Mission m)` | INSERT INTO mission (...) VALUES (?) |
 | `updateStatus(int id, String status)` | UPDATE mission SET status = ? WHERE mission_id = ? |
@@ -264,7 +264,7 @@ SHIELD-Mission-Board/
 │           ├── config.properties          ← NEVER committed (in .gitignore)
 │           └── config.properties.example ← committed, empty values
 ├── schema.sql    ← run once to create tables and types
-├── seed.sql      ← run once to insert hero data
+├── seed.sql      ← run once to insert agent data
 ├── .gitignore
 ├── pom.xml
 └── PROJECT_STRUCTURE.md  ← this file

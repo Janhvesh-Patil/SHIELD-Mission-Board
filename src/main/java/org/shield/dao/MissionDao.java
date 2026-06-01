@@ -19,19 +19,19 @@ public class MissionDao {
                 resultSet.getString("description"),
                 MissionStatus.valueOf(resultSet.getString("status").toUpperCase()),
                 MissionPriority.valueOf(resultSet.getString("priority").toUpperCase()),
-                resultSet.getObject("hero_id", Integer.class),
+                resultSet.getObject("agent_id", Integer.class),
                 MissionCategory.valueOf(resultSet.getString("category").toUpperCase()),
                 resultSet.getTimestamp("created_at").toLocalDateTime(),
-                resultSet.getString("hero_name")
+                resultSet.getString("agent_name")
         );
     }
     public List<Mission> findAll() {
         String query = """
                 SELECT M.mission_id, M.title, M.description, M.status, M.priority, M.category, M.created_at,
-                       M.hero_id, H.hero_name
+                       M.agent_id, H.agent_name
                 FROM Mission M
                 LEFT JOIN Hero H 
-                ON M.hero_id = H.hero_id;
+                ON M.agent_id = H.agent_id;
                 """;
         List<Mission> missions = new ArrayList<>();
 
@@ -52,10 +52,10 @@ public class MissionDao {
     public Optional<Mission> findById(int id) {
         String query = """
                 SELECT M.mission_id, M.title, M.description, M.status, M.priority, M.category, M.created_at,
-                       M.hero_id, H.hero_name
+                       M.agent_id, H.agent_name
                 FROM Mission M 
-                LEFT JOIN Hero H
-                ON M.hero_id = H.hero_id
+                LEFT JOIN Agent H
+                ON M.agent_id = H.agent_id
                 WHERE M.mission_id = ?;
                 """;
         try (var connection = DatabaseConnection.getConnection();
@@ -76,7 +76,7 @@ public class MissionDao {
 
     public boolean insert(Mission m) {
         String query = """
-                INSERT INTO Mission (title, description, status, priority, category, hero_id)
+                INSERT INTO Mission (title, description, status, priority, category, agent_id)
                 VALUES (?, ?, ?, ?, ?, ?);
                 """;
 
@@ -88,7 +88,7 @@ public class MissionDao {
             preparedStatement.setObject(3, m.getStatus().name().toLowerCase(), Types.OTHER);
             preparedStatement.setObject(4, m.getPriority().name().toLowerCase(), Types.OTHER);
             preparedStatement.setObject(5, m.getCategory().name().toLowerCase(), Types.OTHER);
-            preparedStatement.setObject(6, m.getHeroId());
+            preparedStatement.setObject(6, m.getAgentId());
             if (preparedStatement.executeUpdate() != 0) return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);

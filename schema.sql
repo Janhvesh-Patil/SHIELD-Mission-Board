@@ -13,9 +13,9 @@ CREATE TYPE mission_category AS ENUM (
 );
 
 
-CREATE TABLE hero (
-	hero_id SERIAL PRIMARY KEY,
-	hero_name VARCHAR(100) NOT NULL
+CREATE TABLE agent (
+	agent_id SERIAL PRIMARY KEY,
+	agent_name VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE mission (
@@ -25,11 +25,11 @@ CREATE TABLE mission (
 	status mission_status NOT NULL DEFAULT 'pending',
 	priority mission_priority NOT NULL DEFAULT 'medium',
 	category mission_category NOT NULL,
-	hero_id INTEGER REFERENCES hero (hero_id),
+	agent_id INTEGER REFERENCES agent (agent_id),
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO hero (hero_name) VALUES
+INSERT INTO agent (agent_name) VALUES
 	('Clint Barton'),
 	('Natasha Romanoff'),
 	('Phil Coulson'),
@@ -40,5 +40,3 @@ INSERT INTO hero (hero_name) VALUES
 	('Jemma Simmons'),
 	('Grant Ward'),
 	('Sharon Carter');
-
-SELECT * FROM hero;

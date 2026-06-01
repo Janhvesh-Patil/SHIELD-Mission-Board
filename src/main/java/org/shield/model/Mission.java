@@ -9,40 +9,40 @@ public class Mission {
     private MissionStatus status;
     private MissionPriority priority;
     private MissionCategory category;
-    private Integer heroId;
+    private Integer agentId;
     private LocalDateTime createdAt;
-    private String heroName;
+    private String agentName;
 
     public Mission(String title, String description, MissionStatus status,
-                   MissionPriority priority, MissionCategory category, Integer heroId) {
+                   MissionPriority priority, MissionCategory category, Integer agentId) {
         this.title = title;
         this.description = description;
         this.status = status;
         this.priority = priority;
         this.category = category;
-        this.heroId = heroId;
+        this.agentId = agentId;
     }
 
     public Mission(int missionId, String title, String description, MissionStatus status,
-                   MissionPriority priority, Integer heroId, MissionCategory category,
-                   LocalDateTime createdAt, String heroName) {
+                   MissionPriority priority, Integer agentId, MissionCategory category,
+                   LocalDateTime createdAt, String agentName) {
         this.missionId = missionId;
         this.title = title;
         this.description = description;
         this.status = status;
         this.priority = priority;
         this.category = category;
-        this.heroId = heroId;
+        this.agentId = agentId;
         this.createdAt = createdAt;
-        this.heroName = heroName;
+        this.agentName = agentName;
     }
 
-    public String getHeroName() {
-        return heroName;
+    public String getAgentName() {
+        return agentName;
     }
 
-    public void setHeroName(String heroName) {
-        this.heroName = heroName;
+    public void setAgentName(String agentName) {
+        this.agentName = agentName;
     }
 
     public int getMissionId() {
@@ -73,8 +73,8 @@ public class Mission {
         return createdAt;
     }
 
-    public Integer getHeroId() {
-        return heroId;
+    public Integer getAgentId() {
+        return agentId;
     }
 
     public void setTitle(String title) {
@@ -97,7 +97,7 @@ public class Mission {
         this.category = category;
     }
 
-    public void setHeroId(Integer heroId) {
-        this.heroId = heroId;
+    public void setAgentId(Integer agentId) {
+        this.agentId = agentId;
     }
 }

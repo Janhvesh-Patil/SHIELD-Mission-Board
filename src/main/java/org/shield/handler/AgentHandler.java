@@ -1,14 +1,14 @@
 package org.shield.handler;
 
 import com.google.gson.Gson;
-import org.shield.dao.HeroDao;
+import org.shield.dao.AgentDao;
 import org.shield.server.HttpResponse;
 
-public class HeroHandler {
-    private HeroDao heroDao = new HeroDao();
+public class AgentHandler {
+    private final AgentDao agentDao = new AgentDao();
 
     public String getAll() {
-        var heroes = heroDao.findAll();
+        var heroes = agentDao.findAll();
         Gson gson = new Gson();
         return HttpResponse.buildResponse(200, gson.toJson(heroes));
     }
