@@ -15,8 +15,8 @@ public class HttpRequest {
     private int contentLength;
 
     public HttpRequest(InputStream inputStream) {
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))) {
-
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             String[] methodAndPath = bufferedReader.readLine().split(" "); //Method and Path
             this.method = methodAndPath[0];
             this.path = methodAndPath[1];
