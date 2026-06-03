@@ -29,14 +29,4 @@ CREATE TABLE mission (
 	created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO agent (agent_name) VALUES
-	('Clint Barton'),
-	('Natasha Romanoff'),
-	('Phil Coulson'),
-	('Maria Hill'),
-	('Daisy Johnson'),
-	('Melinda May'),
-	('Leo Fitz'),
-	('Jemma Simmons'),
-	('Grant Ward'),
-	('Sharon Carter');
+

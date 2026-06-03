@@ -30,7 +30,7 @@ public class MissionDao {
                 SELECT M.mission_id, M.title, M.description, M.status, M.priority, M.category, M.created_at,
                        M.agent_id, H.agent_name
                 FROM Mission M
-                LEFT JOIN Hero H 
+                LEFT JOIN Agent H 
                 ON M.agent_id = H.agent_id;
                 """;
         List<Mission> missions = new ArrayList<>();

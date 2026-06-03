@@ -1,0 +1,17 @@
+meta {
+  name: Update Status Invalid Value
+  type: http
+  seq: 6
+}
+
+patch {
+  url: http://localhost:9090/missions/1/status
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "status": "flying"
+  }
+}
