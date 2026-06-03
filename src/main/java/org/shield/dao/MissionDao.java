@@ -76,8 +76,8 @@ public class MissionDao {
 
     public boolean insert(Mission m) {
         String query = """
-                INSERT INTO Mission (title, description, status, priority, category, agent_id)
-                VALUES (?, ?, ?, ?, ?, ?);
+                INSERT INTO Mission (title, description, category, agent_id)
+                VALUES (?, ?, ?, ?);
                 """;
 
         try (var connection = DatabaseConnection.getConnection();
@@ -85,10 +85,8 @@ public class MissionDao {
         ){
             preparedStatement.setString(1, m.getTitle());
             preparedStatement.setString(2, m.getDescription());
-            preparedStatement.setObject(3, m.getStatus().name().toLowerCase(), Types.OTHER);
-            preparedStatement.setObject(4, m.getPriority().name().toLowerCase(), Types.OTHER);
-            preparedStatement.setObject(5, m.getCategory().name().toLowerCase(), Types.OTHER);
-            preparedStatement.setObject(6, m.getAgentId());
+            preparedStatement.setObject(3, m.getCategory().name().toLowerCase(), Types.OTHER);
+            preparedStatement.setObject(4, m.getAgentId());
             if (preparedStatement.executeUpdate() != 0) return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);

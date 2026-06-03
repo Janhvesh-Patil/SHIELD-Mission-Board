@@ -17,7 +17,13 @@ public class HttpRequest {
     public HttpRequest(InputStream inputStream) {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            String[] methodAndPath = bufferedReader.readLine().split(" "); //Method and Path
+            String firstLine = bufferedReader.readLine();
+            if (firstLine == null || firstLine.isBlank()) {
+                this.method = "";
+                this.path = "";
+                return;
+            }
+            String[] methodAndPath = firstLine.split(" ");
             this.method = methodAndPath[0];
             this.path = methodAndPath[1];
 

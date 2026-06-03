@@ -7,6 +7,11 @@ public class Router {
     private static final MissionHandler missionHandler = new MissionHandler();
     private static final AgentHandler agentHandler = new AgentHandler();
     public static String route(HttpRequest request) {
+
+        if (request.getMethod().isEmpty()) {
+            return HttpResponse.buildResponse(400, "");
+        }
+
         if (request.getMethod().equals("OPTIONS")) {
             return HttpResponse.buildResponse(200, "");
         }
@@ -28,8 +33,9 @@ public class Router {
                 }
             }
             case "PATCH" -> {
-                if (segments.length == 3) {
-                    return missionHandler.updateStatus(Integer.parseInt(segments[2]),
+                if (segments.length == 4 && segments[3].equals("status")) {
+                    return missionHandler.updateStatus(
+                            Integer.parseInt(segments[2]),
                             request.getBody());
                 } else {
                     return HttpResponse.buildResponse(404, "{\"error\":\"Route not found\"}");
