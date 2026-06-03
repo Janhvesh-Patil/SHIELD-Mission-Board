@@ -12,7 +12,7 @@ target/
 out/
 
 # Config with credentials - NEVER commit this
-src/main/resources/config.properties
+backend/src/main/resources/config.properties
 
 # Mac OS
 .DS_Store
