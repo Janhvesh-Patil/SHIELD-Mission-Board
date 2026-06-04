@@ -1,5 +1,5 @@
 # Maven build output
-target/
+backend/target/
 
 # IntelliJ project files
 .idea/
@@ -19,3 +19,6 @@ backend/src/main/resources/config.properties
 
 # VS Code
 .vscode/
+
+# Modified pom.xml created by Maven when shading plugin
+backend/dependency-reduced-pom.xml
