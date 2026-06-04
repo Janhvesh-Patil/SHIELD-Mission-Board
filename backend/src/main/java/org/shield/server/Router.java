@@ -20,6 +20,10 @@ public class Router {
         String path = request.getPath();
         String[] segments = path.split("/");
 
+        if (segments.length < 2) {
+            return HttpResponse.buildResponse(404, "{\"error\":\"Route not found\"}");
+        }
+
         switch (method) {
             case "GET" -> {
                 if (segments[1].equals("missions") && segments.length == 2) {
