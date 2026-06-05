@@ -3,6 +3,7 @@ package org.shield.dao;
 import org.shield.db.DatabaseConnection;
 import org.shield.model.Agent;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,5 +29,19 @@ public class AgentDao {
         }
 
         return agents;
+    }
+
+    public boolean insert(String agentName) {
+        String query = """
+                INSERT INTO agent (agent_name)
+                VALUES (?);
+                """;
+        try (var connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, agentName);
+            return (ps.executeUpdate() != 0);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

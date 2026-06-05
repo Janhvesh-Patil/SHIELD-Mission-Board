@@ -98,4 +98,14 @@ public class MissionHandler {
             return HttpResponse.buildResponse(404, "{\"error\":\"Mission not found\"}");
         }
     }
+
+    public String updateAgent(int id, String body) {
+        Mission m = gson.fromJson(body, Mission.class);
+        boolean result = missionDao.updateAgent(id, m.getAgentId());
+        if (result) {
+            return HttpResponse.buildResponse(200, "{\"message\":\"Agent assigned\"}");
+        } else {
+            return HttpResponse.buildResponse(404, "{\"error\":\"Mission not found\"}");
+        }
+    }
 }

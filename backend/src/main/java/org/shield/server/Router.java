@@ -41,12 +41,20 @@ public class Router {
                     return missionHandler.updateStatus(
                             Integer.parseInt(segments[2]),
                             request.getBody());
+                } else if (segments.length == 4 && segments[3].equals("agent")) {
+                    return missionHandler.updateAgent(Integer.parseInt(segments[2]), request.getBody());
                 } else {
                     return HttpResponse.buildResponse(404, "{\"error\":\"Route not found\"}");
                 }
             }
             case "POST" -> {
-                return missionHandler.create(request.getBody());
+                if (segments[1].equals("missions")) {
+                    return missionHandler.create(request.getBody());
+                } else if (segments[1].equals("agents")) {
+                    return agentHandler.create(request.getBody());
+                }  else {
+                    return HttpResponse.buildResponse(404, "{\"error\":\"Route not found\"}");
+                }
             }
             case "DELETE" -> {
                 if (segments.length == 3) {
@@ -59,5 +67,6 @@ public class Router {
                 return HttpResponse.buildResponse(404, "{\"error\":\"No route matches\"}");
             }
         }
+
     }
 }

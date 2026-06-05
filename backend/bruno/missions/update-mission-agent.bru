@@ -1,0 +1,17 @@
+meta {
+  name: Update Mission Agent
+  type: http
+  seq: 5
+}
+
+patch {
+  url: https://shield-mission-board.onrender.com/missions/2/agent
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "agentId" : 11
+  }
+}

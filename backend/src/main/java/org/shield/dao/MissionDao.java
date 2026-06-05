@@ -131,4 +131,26 @@ public class MissionDao {
         }
         return false;
     }
+
+    public boolean updateAgent(int id, Integer agentId) {
+        String query = """
+                UPDATE mission 
+                SET agent_id = ?
+                WHERE mission_id = ?;
+                """;
+
+        try (var connection = DatabaseConnection.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setObject(1, agentId, Types.INTEGER);
+            preparedStatement.setInt(2, id);
+
+            if (preparedStatement.executeUpdate() != 0) return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return false;
+    }
+
+
 }

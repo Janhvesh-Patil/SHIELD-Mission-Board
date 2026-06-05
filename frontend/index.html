@@ -3,391 +3,430 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>S.H.I.E.L.D. Mission Control — Classified</title>
-  <meta name="description" content="S.H.I.E.L.D. Mission Control Board — Tactical Operations Management System. Classified clearance required." />
+  <title>S.H.I.E.L.D. — Mission Control</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            'shield-black': '#0a0a0f',
-            'shield-dark': '#0d1117',
-            'shield-panel': '#161b22',
-            'shield-border': '#21262d',
-            'shield-muted': '#30363d',
-            'shield-text': '#c9d1d9',
-            'shield-bright': '#e6edf3',
-            'shield-red': '#f85149',
-            'shield-red-dim': '#da3633',
-            'shield-amber': '#d29922',
-            'shield-amber-dim': '#9e6a03',
-            'shield-green': '#3fb950',
-            'shield-green-dim': '#238636',
-            'shield-blue': '#58a6ff',
-            'shield-blue-dim': '#1f6feb',
-            'shield-purple': '#bc8cff',
-            'shield-cyan': '#39d2c0',
+            s: {
+              bg:       '#060c12',
+              deep:     '#090f18',
+              panel:    '#0d1521',
+              card:     '#101c2a',
+              border:   '#1a2840',
+              line:     '#223350',
+              muted:    '#4a6280',
+              dim:      '#7a96b0',
+              text:     '#b8cfe0',
+              bright:   '#ddeaf5',
+              white:    '#f0f6fc',
+              blue:     '#3b82f6',
+              bluebr:   '#60a5fa',
+              bluedm:   '#1d4ed8',
+              cyan:     '#06b6d4',
+              cyanbr:   '#22d3ee',
+              red:      '#ef4444',
+              reddm:    '#b91c1c',
+            }
           },
           fontFamily: {
-            'mono': ['JetBrains Mono', 'Consolas', 'monospace'],
-            'sans': ['Inter', 'system-ui', 'sans-serif'],
-          },
+            mono: ['JetBrains Mono', 'Consolas', 'monospace'],
+            display: ['Rajdhani', 'system-ui', 'sans-serif'],
+          }
         }
       }
     }
   </script>
   <style>
-    /* ── Base ── */
+    *, *::before, *::after { box-sizing: border-box; }
+
     body {
-      background-color: #0a0a0f;
-      font-family: 'Inter', system-ui, sans-serif;
+      background-color: #060c12;
+      font-family: 'JetBrains Mono', monospace;
+      min-height: 100vh;
     }
 
-    /* ── Hex grid background ── */
-    .hex-bg {
+    /* Grid background */
+    .grid-bg {
       background-image:
-        radial-gradient(ellipse at 20% 50%, rgba(31, 111, 235, 0.04) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 20%, rgba(248, 81, 73, 0.03) 0%, transparent 50%),
-        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 L52 17.5 L52 42.5 L30 55 L8 42.5 L8 17.5 Z' fill='none' stroke='%23ffffff' stroke-opacity='0.02' stroke-width='0.5'/%3E%3C/svg%3E");
-      background-size: 100% 100%, 100% 100%, 60px 60px;
+        linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px),
+        radial-gradient(ellipse at 15% 50%, rgba(6,182,212,0.04) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 20%, rgba(59,130,246,0.04) 0%, transparent 55%);
+      background-size: 40px 40px, 40px 40px, 100% 100%, 100% 100%;
     }
 
-    /* ── Scanline overlay ── */
-    .scanline::after {
+    /* Scanline */
+    .scanline::before {
       content: '';
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      inset: 0;
       background: repeating-linear-gradient(
         0deg,
         transparent,
-        transparent 2px,
-        rgba(0, 0, 0, 0.03) 2px,
-        rgba(0, 0, 0, 0.03) 4px
+        transparent 3px,
+        rgba(0,0,0,0.04) 3px,
+        rgba(0,0,0,0.04) 4px
       );
       pointer-events: none;
-      z-index: 9999;
+      z-index: 9998;
     }
 
-    /* ── Custom scrollbar ── */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #161b22; }
-    ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: #090f18; }
+    ::-webkit-scrollbar-thumb { background: #1a2840; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #223350; }
 
-    /* ── Column scrollbar ── */
-    .kanban-col::-webkit-scrollbar { width: 4px; }
-    .kanban-col::-webkit-scrollbar-track { background: transparent; }
-    .kanban-col::-webkit-scrollbar-thumb { background: #21262d; border-radius: 2px; }
+    .col-scroll::-webkit-scrollbar { width: 3px; }
+    .col-scroll::-webkit-scrollbar-track { background: transparent; }
+    .col-scroll::-webkit-scrollbar-thumb { background: #1a2840; border-radius: 2px; }
 
-    /* ── Animations ── */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
     @keyframes fadeIn {
       from { opacity: 0; }
-      to { opacity: 1; }
+      to   { opacity: 1; }
     }
     @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-8px) scale(0.98); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+      from { opacity: 0; transform: translateY(-10px) scale(0.985); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 8px rgba(248, 81, 73, 0.3); }
-      50% { box-shadow: 0 0 20px rgba(248, 81, 73, 0.6); }
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
     }
-    @keyframes borderScan {
-      0% { background-position: 0% 0%; }
-      100% { background-position: 200% 0%; }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
     }
-    @keyframes typewriter {
-      from { width: 0; }
-      to { width: 100%; }
+    @keyframes scan-line {
+      0%   { top: -2px; }
+      100% { top: 100%; }
     }
-    .animate-fade-in-up { animation: fadeInUp 0.4s ease-out forwards; }
-    .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
-    .animate-slide-down { animation: slideDown 0.35s ease-out forwards; }
-    .animate-pulse-glow { animation: pulseGlow 2s ease-in-out infinite; }
 
-    /* ── Card hover effect ── */
+    .anim-up   { animation: fadeUp 0.4s ease-out both; }
+    .anim-in   { animation: fadeIn 0.3s ease-out both; }
+    .anim-down { animation: slideDown 0.3s ease-out both; }
+
+    /* Cards */
     .mission-card {
-      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       position: relative;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      overflow: hidden;
     }
-    .mission-card::before {
+    .mission-card::after {
       content: '';
       position: absolute;
-      inset: 0;
-      border-radius: 0.5rem;
-      padding: 1px;
-      background: linear-gradient(135deg, transparent 40%, rgba(88, 166, 255, 0.15) 50%, transparent 60%);
-      background-size: 200% 200%;
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
+      top: -2px; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(59,130,246,0.5), transparent);
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transition: opacity 0.25s;
     }
-    .mission-card:hover::before {
-      opacity: 1;
-      animation: borderScan 2s linear infinite;
-    }
-    .mission-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-      border-color: #30363d;
+    .mission-card:hover { transform: translateY(-2px); border-color: #223350 !important; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+    .mission-card:hover::after { opacity: 1; }
+
+    /* Skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, #0d1521 0%, #1a2840 50%, #0d1521 100%);
+      background-size: 400px 100%;
+      animation: shimmer 1.6s ease-in-out infinite;
+      border-radius: 6px;
     }
 
-    /* ── Classified stamp ── */
-    .classified-stamp {
-      color: rgba(248, 81, 73, 0.08);
-      font-size: 6rem;
-      font-weight: 900;
-      transform: rotate(-20deg);
-      letter-spacing: 0.2em;
+    /* Watermark */
+    .watermark {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 9rem;
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      color: rgba(59,130,246,0.025);
+      transform: rotate(-25deg);
       user-select: none;
       pointer-events: none;
     }
 
-    /* ── Modal backdrop ── */
-    .modal-backdrop {
-      background: rgba(1, 4, 9, 0.85);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+    /* Modal backdrop */
+    .backdrop {
+      background: rgba(4, 8, 14, 0.88);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
     }
 
-    /* ── Priority bar ── */
-    .priority-bar {
-      width: 3px;
-      border-radius: 2px;
+    /* Top accent line on columns */
+    .col-accent-blue  { border-top: 2px solid #3b82f6; }
+    .col-accent-cyan  { border-top: 2px solid #06b6d4; }
+    .col-accent-white { border-top: 2px solid rgba(240,246,252,0.4); }
+
+    /* Priority left bar */
+    .pbar {
       position: absolute;
-      top: 12px;
-      bottom: 12px;
-      left: 0;
+      left: 0; top: 10px; bottom: 10px;
+      width: 2px;
+      border-radius: 1px;
     }
 
-    /* ── Loading skeleton ── */
-    @keyframes shimmer {
-      0% { background-position: -200px 0; }
-      100% { background-position: calc(200px + 100%) 0; }
+    /* Input/select base */
+    .field {
+      width: 100%;
+      background: #090f18;
+      border: 1px solid #1a2840;
+      border-radius: 6px;
+      padding: 10px 14px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #ddeaf5;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
     }
-    .skeleton {
-      background: linear-gradient(90deg, #161b22 0%, #21262d 50%, #161b22 100%);
-      background-size: 200px 100%;
-      animation: shimmer 1.5s ease-in-out infinite;
-      border-radius: 0.375rem;
-    }
+    .field:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59,130,246,0.15); }
+    .field::placeholder { color: #4a6280; }
 
-    /* ── Toast notifications ── */
-    .toast-enter { animation: slideDown 0.35s ease-out forwards; }
-    .toast-exit { animation: fadeIn 0.25s ease-in reverse forwards; }
-
-    /* ── Navbar border glow ── */
-    .nav-border {
-      background: linear-gradient(90deg,
-        transparent 0%,
-        rgba(248, 81, 73, 0.4) 20%,
-        rgba(210, 153, 34, 0.4) 40%,
-        rgba(88, 166, 255, 0.4) 60%,
-        rgba(63, 185, 80, 0.4) 80%,
-        transparent 100%
-      );
-      height: 1px;
-    }
-
-    /* ── Select styling ── */
-    select {
+    select.field {
       appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23c9d1d9' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%234a6280' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 0.75rem center;
-      padding-right: 2.5rem;
+      background-position: right 12px center;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+    select.field option { background: #0d1521; color: #ddeaf5; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 9px 18px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s;
+      outline: none;
+      white-space: nowrap;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-blue  { background: #1d4ed8; border-color: #3b82f6; color: #f0f6fc; }
+    .btn-blue:hover:not(:disabled)  { background: #2563eb; box-shadow: 0 0 16px rgba(59,130,246,0.3); }
+    .btn-ghost { background: #0d1521; border-color: #1a2840; color: #7a96b0; }
+    .btn-ghost:hover:not(:disabled) { border-color: #223350; color: #b8cfe0; }
+    .btn-red   { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: #ef4444; }
+    .btn-red:hover:not(:disabled)   { background: rgba(239,68,68,0.18); border-color: #ef4444; }
+    .btn-cyan  { background: rgba(6,182,212,0.1); border-color: rgba(6,182,212,0.3); color: #06b6d4; }
+    .btn-cyan:hover:not(:disabled)  { background: rgba(6,182,212,0.18); border-color: #06b6d4; }
+
+    /* Label */
+    .lbl {
+      display: block;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      color: #4a6280;
+      text-transform: uppercase;
+      margin-bottom: 6px;
     }
 
-    /* ── Status dropdown coloring in detail modal ── */
-    .status-select option[value="PENDING"] { color: #d29922; }
-    .status-select option[value="ACTIVE"] { color: #58a6ff; }
-    .status-select option[value="COMPLETE"] { color: #3fb950; }
+    /* Dot pulse */
+    .dot-pulse { animation: pulse-dot 2s ease-in-out infinite; }
+
+    /* Scanning line on modal */
+    .modal-scan {
+      position: absolute;
+      left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(6,182,212,0.4), transparent);
+      animation: scan-line 4s linear infinite;
+      pointer-events: none;
+    }
+
+    /* Corner brackets */
+    .corner-tl, .corner-tr, .corner-bl, .corner-br {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+    }
+    .corner-tl { top: 0; left: 0; border-top: 1px solid #3b82f6; border-left: 1px solid #3b82f6; }
+    .corner-tr { top: 0; right: 0; border-top: 1px solid #3b82f6; border-right: 1px solid #3b82f6; }
+    .corner-bl { bottom: 0; left: 0; border-bottom: 1px solid #3b82f6; border-left: 1px solid #3b82f6; }
+    .corner-br { bottom: 0; right: 0; border-bottom: 1px solid #3b82f6; border-right: 1px solid #3b82f6; }
   </style>
 </head>
 
-<body class="hex-bg scanline min-h-screen text-shield-text">
+<body class="grid-bg scanline text-s-text">
 
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!-- NAVBAR                                                  -->
-  <!-- ════════════════════════════════════════════════════════ -->
-  <nav id="navbar" class="sticky top-0 z-50 bg-shield-dark/95 backdrop-blur-md border-b border-shield-border">
-    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between h-16">
+  <!-- ═══════════════════════════════════════════════════════
+       NAVBAR
+  ═══════════════════════════════════════════════════════ -->
+  <nav class="sticky top-0 z-50 bg-s-deep/95 backdrop-blur-md border-b border-s-border">
+    <div class="max-w-[1700px] mx-auto px-5 lg:px-8">
+      <div class="flex items-center justify-between h-14">
 
-        <!-- Left: Logo + Title -->
+        <!-- Logo -->
         <div class="flex items-center gap-4">
-          <!-- SHIELD Eagle Icon -->
-          <div class="relative flex items-center justify-center w-10 h-10">
-            <div class="absolute inset-0 rounded-full bg-gradient-to-br from-shield-red/20 to-transparent"></div>
-            <svg class="w-7 h-7 text-shield-red" viewBox="0 0 24 24" fill="currentColor">
+          <div class="relative flex items-center justify-center w-9 h-9 border border-s-border rounded-lg bg-s-panel">
+            <svg class="w-5 h-5 text-s-cyan" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 2.18l7 3.12v4.7c0 4.83-3.4 9.36-7 10.5-3.6-1.14-7-5.67-7-10.5V6.3l7-3.12z"/>
-              <path d="M12 6l-4 2v3c0 2.76 1.72 5.33 4 6.2 2.28-.87 4-3.44 4-6.2V8l-4-2zm0 1.8l2.5 1.25v1.95c0 1.86-1.07 3.58-2.5 4.35-1.43-.77-2.5-2.49-2.5-4.35V9.05L12 7.8z"/>
+              <path d="M12 6l-4 2v3c0 2.76 1.72 5.33 4 6.2 2.28-.87 4-3.44 4-6.2V8l-4-2z"/>
             </svg>
           </div>
           <div>
-            <div class="flex items-center gap-2">
-              <h1 class="text-lg font-bold tracking-widest text-shield-bright font-mono">S.H.I.E.L.D.</h1>
-              <span class="hidden sm:inline text-xs text-shield-red font-mono tracking-wider opacity-60">■ CLASSIFIED</span>
+            <div class="flex items-center gap-3">
+              <span class="font-display font-700 text-base tracking-[0.25em] text-s-white" style="font-weight:700">S.H.I.E.L.D.</span>
+              <span class="hidden sm:inline text-[11px] tracking-[0.2em] text-s-red font-mono border border-s-red/30 px-1.5 py-0.5 rounded">CLASSIFIED</span>
             </div>
-            <p class="text-[10px] tracking-[0.3em] text-shield-muted font-mono uppercase">Mission Control Interface</p>
+            <div class="text-[11px] tracking-[0.3em] text-s-muted uppercase">Mission Control Interface</div>
           </div>
         </div>
 
-        <!-- Center: Status -->
-        <div class="hidden md:flex items-center gap-6">
+        <!-- Center status -->
+        <div class="hidden md:flex items-center gap-6 text-[12px] font-mono tracking-wider">
           <div class="flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-shield-green animate-pulse"></span>
-            <span class="text-xs font-mono text-shield-green tracking-wider">SYSTEM ONLINE</span>
+            <span class="w-1.5 h-1.5 rounded-full bg-s-cyan dot-pulse"></span>
+            <span class="text-s-cyan">SYSTEM ONLINE</span>
           </div>
-          <div class="h-4 w-px bg-shield-border"></div>
-          <div class="flex items-center gap-2" id="mission-count-container">
-            <span class="text-xs font-mono text-shield-muted tracking-wider">TOTAL MISSIONS</span>
-            <span id="mission-count-badge" class="inline-flex items-center justify-center min-w-[28px] h-6 px-2 text-xs font-bold font-mono rounded-md bg-shield-red/15 text-shield-red border border-shield-red/20">
-              —
-            </span>
+          <div class="w-px h-4 bg-s-border"></div>
+          <div class="flex items-center gap-2">
+            <span class="text-s-muted">MISSIONS</span>
+            <span id="mission-count" class="px-2 py-0.5 rounded bg-s-blue/10 border border-s-blue/20 text-s-bluebr font-bold">—</span>
+          </div>
+          <div class="w-px h-4 bg-s-border"></div>
+          <div class="flex items-center gap-2">
+            <span class="text-s-muted">AGENTS</span>
+            <span id="agent-count" class="px-2 py-0.5 rounded bg-s-cyan/10 border border-s-cyan/20 text-s-cyanbr font-bold">—</span>
           </div>
         </div>
 
-        <!-- Right: New Mission Button -->
-        <button
-          id="btn-new-mission"
-          onclick="openNewMissionModal()"
-          class="group relative inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold font-mono tracking-wider
-                 bg-gradient-to-r from-shield-red-dim to-shield-red text-white rounded-lg
-                 hover:from-shield-red hover:to-red-500
-                 transition-all duration-300 hover:shadow-lg hover:shadow-shield-red/25
-                 focus:outline-none focus:ring-2 focus:ring-shield-red/50 focus:ring-offset-2 focus:ring-offset-shield-dark"
-        >
-          <svg class="w-4 h-4 transition-transform group-hover:rotate-90 duration-300" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-          </svg>
-          <span class="hidden sm:inline">NEW MISSION</span>
-        </button>
+        <!-- Actions -->
+        <div class="flex items-center gap-2">
+          <button onclick="openAddAgentModal()" class="btn btn-ghost hidden sm:inline-flex">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z"/>
+            </svg>
+            ADD AGENT
+          </button>
+          <button onclick="openNewMissionModal()" class="btn btn-blue">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
+            </svg>
+            NEW MISSION
+          </button>
+        </div>
+
       </div>
     </div>
-    <!-- Nav border glow -->
-    <div class="nav-border"></div>
+    <!-- Accent line -->
+    <div style="height:1px; background: linear-gradient(90deg, transparent, #3b82f6 30%, #06b6d4 70%, transparent)"></div>
   </nav>
 
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!-- TOAST CONTAINER                                         -->
-  <!-- ════════════════════════════════════════════════════════ -->
-  <div id="toast-container" class="fixed top-20 right-4 z-[60] flex flex-col gap-2 pointer-events-none"></div>
+  <!-- ═══════════════════════════════════════════════════════
+       TOASTS
+  ═══════════════════════════════════════════════════════ -->
+  <div id="toast-container" class="fixed top-16 right-4 z-[70] flex flex-col gap-2 pointer-events-none"></div>
 
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!-- LOADING STATE                                           -->
-  <!-- ════════════════════════════════════════════════════════ -->
-  <div id="loading-state" class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div class="space-y-4">
-        <div class="skeleton h-12 w-full"></div>
-        <div class="skeleton h-32 w-full"></div>
-        <div class="skeleton h-32 w-full"></div>
-      </div>
-      <div class="space-y-4">
-        <div class="skeleton h-12 w-full"></div>
-        <div class="skeleton h-32 w-full"></div>
-        <div class="skeleton h-32 w-full"></div>
-        <div class="skeleton h-32 w-full"></div>
-      </div>
-      <div class="space-y-4">
-        <div class="skeleton h-12 w-full"></div>
-        <div class="skeleton h-32 w-full"></div>
-      </div>
+  <!-- ═══════════════════════════════════════════════════════
+       LOADING STATE
+  ═══════════════════════════════════════════════════════ -->
+  <div id="loading-state" class="max-w-[1700px] mx-auto px-5 lg:px-8 py-8">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <div class="space-y-3"><div class="skeleton h-10"></div><div class="skeleton h-28"></div><div class="skeleton h-28"></div></div>
+      <div class="space-y-3"><div class="skeleton h-10"></div><div class="skeleton h-28"></div><div class="skeleton h-28"></div><div class="skeleton h-28"></div></div>
+      <div class="space-y-3"><div class="skeleton h-10"></div><div class="skeleton h-28"></div></div>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!-- ERROR STATE                                             -->
-  <!-- ════════════════════════════════════════════════════════ -->
-  <div id="error-state" class="hidden max-w-md mx-auto mt-20 text-center px-4">
-    <div class="p-8 rounded-xl bg-shield-panel border border-shield-red/30">
-      <svg class="w-16 h-16 mx-auto text-shield-red mb-4 opacity-60" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+  <!-- ═══════════════════════════════════════════════════════
+       ERROR STATE
+  ═══════════════════════════════════════════════════════ -->
+  <div id="error-state" class="hidden max-w-sm mx-auto mt-24 px-4 text-center">
+    <div class="relative p-8 rounded-lg bg-s-panel border border-s-red/25">
+      <div class="corner-tl" style="border-color:#ef4444"></div>
+      <div class="corner-tr" style="border-color:#ef4444"></div>
+      <div class="corner-bl" style="border-color:#ef4444"></div>
+      <div class="corner-br" style="border-color:#ef4444"></div>
+      <svg class="w-12 h-12 mx-auto mb-4 text-s-red opacity-50" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.007v.008H12v-.008z"/>
       </svg>
-      <h2 class="text-xl font-bold text-shield-red font-mono tracking-wider mb-2">CONNECTION LOST</h2>
-      <p id="error-message" class="text-sm text-shield-muted mb-6 font-mono">Unable to establish connection with S.H.I.E.L.D. servers.</p>
-      <button onclick="initApp()" class="px-6 py-2 bg-shield-red/15 text-shield-red border border-shield-red/30 rounded-lg font-mono text-sm tracking-wider hover:bg-shield-red/25 transition-colors">
-        RETRY CONNECTION
-      </button>
+      <h2 class="text-sm font-bold tracking-[0.2em] text-s-red mb-2">CONNECTION LOST</h2>
+      <p id="error-message" class="text-xs text-s-muted mb-6 leading-relaxed">Unable to reach S.H.I.E.L.D. servers.</p>
+      <button onclick="initApp()" class="btn btn-ghost" style="width:100%">RETRY CONNECTION</button>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!-- KANBAN BOARD                                            -->
-  <!-- ════════════════════════════════════════════════════════ -->
-  <main id="kanban-board" class="hidden max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6">
-    <!-- Classified Watermark -->
+  <!-- ═══════════════════════════════════════════════════════
+       KANBAN BOARD
+  ═══════════════════════════════════════════════════════ -->
+  <main id="kanban-board" class="hidden max-w-[1700px] mx-auto px-5 lg:px-8 py-6">
+
+    <!-- Watermark -->
     <div class="fixed inset-0 flex items-center justify-center overflow-hidden pointer-events-none z-0">
-      <div class="classified-stamp">CLASSIFIED</div>
+      <div class="watermark">CLASSIFIED</div>
     </div>
 
     <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-5">
 
-      <!-- ── PENDING Column ── -->
+      <!-- PENDING -->
       <div class="flex flex-col">
-        <div class="flex items-center justify-between mb-4 px-1">
-          <div class="flex items-center gap-3">
-            <div class="w-3 h-3 rounded-full bg-shield-amber shadow-lg shadow-shield-amber/30"></div>
-            <h2 class="text-sm font-bold font-mono tracking-[0.2em] text-shield-amber uppercase">Pending</h2>
+        <div class="flex items-center justify-between mb-3 px-0.5">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-s-blue"></span>
+            <span class="text-xs font-bold tracking-[0.2em] text-s-blue">PENDING</span>
           </div>
-          <span id="count-pending" class="inline-flex items-center justify-center min-w-[24px] h-6 px-2 text-xs font-bold font-mono rounded-md bg-shield-amber/10 text-shield-amber border border-shield-amber/20">0</span>
+          <span id="count-pending" class="text-[12px] font-bold px-2 py-0.5 rounded bg-s-blue/10 border border-s-blue/20 text-s-blue">0</span>
         </div>
-        <div class="flex-1 rounded-xl bg-shield-panel/50 border border-shield-border p-3 min-h-[200px]">
-          <div id="col-pending" class="kanban-col space-y-3 max-h-[calc(100vh-220px)] overflow-y-auto pr-1">
-            <!-- Cards inserted by JS -->
-          </div>
-          <div id="empty-pending" class="hidden flex-col items-center justify-center py-12 text-center">
-            <svg class="w-10 h-10 text-shield-muted/40 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <p class="text-xs text-shield-muted font-mono tracking-wider">NO PENDING MISSIONS</p>
+        <div class="flex-1 rounded-lg bg-s-panel border border-s-border col-accent-blue p-3 min-h-[180px]">
+          <div id="col-pending" class="col-scroll space-y-2.5 max-h-[calc(100vh-210px)] overflow-y-auto pr-1"></div>
+          <div id="empty-pending" class="hidden flex-col items-center justify-center py-10">
+            <svg class="w-8 h-8 text-s-muted/30 mb-2" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-[12px] text-s-muted tracking-wider">NO PENDING MISSIONS</p>
           </div>
         </div>
       </div>
 
-      <!-- ── ACTIVE Column ── -->
+      <!-- ACTIVE -->
       <div class="flex flex-col">
-        <div class="flex items-center justify-between mb-4 px-1">
-          <div class="flex items-center gap-3">
-            <div class="w-3 h-3 rounded-full bg-shield-blue shadow-lg shadow-shield-blue/30 animate-pulse"></div>
-            <h2 class="text-sm font-bold font-mono tracking-[0.2em] text-shield-blue uppercase">Active</h2>
+        <div class="flex items-center justify-between mb-3 px-0.5">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-s-cyan dot-pulse"></span>
+            <span class="text-xs font-bold tracking-[0.2em] text-s-cyan">ACTIVE</span>
           </div>
-          <span id="count-active" class="inline-flex items-center justify-center min-w-[24px] h-6 px-2 text-xs font-bold font-mono rounded-md bg-shield-blue/10 text-shield-blue border border-shield-blue/20">0</span>
+          <span id="count-active" class="text-[12px] font-bold px-2 py-0.5 rounded bg-s-cyan/10 border border-s-cyan/20 text-s-cyan">0</span>
         </div>
-        <div class="flex-1 rounded-xl bg-shield-panel/50 border border-shield-border p-3 min-h-[200px]">
-          <div id="col-active" class="kanban-col space-y-3 max-h-[calc(100vh-220px)] overflow-y-auto pr-1">
-          </div>
-          <div id="empty-active" class="hidden flex-col items-center justify-center py-12 text-center">
-            <svg class="w-10 h-10 text-shield-muted/40 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
-            <p class="text-xs text-shield-muted font-mono tracking-wider">NO ACTIVE OPERATIONS</p>
+        <div class="flex-1 rounded-lg bg-s-panel border border-s-border col-accent-cyan p-3 min-h-[180px]">
+          <div id="col-active" class="col-scroll space-y-2.5 max-h-[calc(100vh-210px)] overflow-y-auto pr-1"></div>
+          <div id="empty-active" class="hidden flex-col items-center justify-center py-10">
+            <svg class="w-8 h-8 text-s-muted/30 mb-2" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+            <p class="text-[12px] text-s-muted tracking-wider">NO ACTIVE OPERATIONS</p>
           </div>
         </div>
       </div>
 
-      <!-- ── COMPLETE Column ── -->
+      <!-- COMPLETE -->
       <div class="flex flex-col">
-        <div class="flex items-center justify-between mb-4 px-1">
-          <div class="flex items-center gap-3">
-            <div class="w-3 h-3 rounded-full bg-shield-green shadow-lg shadow-shield-green/30"></div>
-            <h2 class="text-sm font-bold font-mono tracking-[0.2em] text-shield-green uppercase">Complete</h2>
+        <div class="flex items-center justify-between mb-3 px-0.5">
+          <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-s-white/50"></span>
+            <span class="text-xs font-bold tracking-[0.2em] text-s-dim">COMPLETE</span>
           </div>
-          <span id="count-complete" class="inline-flex items-center justify-center min-w-[24px] h-6 px-2 text-xs font-bold font-mono rounded-md bg-shield-green/10 text-shield-green border border-shield-green/20">0</span>
+          <span id="count-complete" class="text-[12px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-s-dim">0</span>
         </div>
-        <div class="flex-1 rounded-xl bg-shield-panel/50 border border-shield-border p-3 min-h-[200px]">
-          <div id="col-complete" class="kanban-col space-y-3 max-h-[calc(100vh-220px)] overflow-y-auto pr-1">
-          </div>
-          <div id="empty-complete" class="hidden flex-col items-center justify-center py-12 text-center">
-            <svg class="w-10 h-10 text-shield-muted/40 mb-3" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            <p class="text-xs text-shield-muted font-mono tracking-wider">NO COMPLETED MISSIONS</p>
+        <div class="flex-1 rounded-lg bg-s-panel border border-s-border col-accent-white p-3 min-h-[180px]">
+          <div id="col-complete" class="col-scroll space-y-2.5 max-h-[calc(100vh-210px)] overflow-y-auto pr-1"></div>
+          <div id="empty-complete" class="hidden flex-col items-center justify-center py-10">
+            <svg class="w-8 h-8 text-s-muted/30 mb-2" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-[12px] text-s-muted tracking-wider">NO COMPLETED MISSIONS</p>
           </div>
         </div>
       </div>
@@ -395,720 +434,627 @@
     </div>
   </main>
 
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!-- MISSION DETAIL MODAL                                    -->
-  <!-- ════════════════════════════════════════════════════════ -->
-  <div id="modal-detail" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
-    <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-shield-dark rounded-2xl border border-shield-border shadow-2xl animate-slide-down" onclick="event.stopPropagation()">
+  <!-- ═══════════════════════════════════════════════════════
+       DETAIL MODAL
+  ═══════════════════════════════════════════════════════ -->
+  <div id="modal-detail" class="hidden fixed inset-0 z-50 backdrop flex items-center justify-center p-4">
+    <div class="relative w-full max-w-xl max-h-[92vh] overflow-y-auto bg-s-deep rounded-xl border border-s-border shadow-2xl anim-down" onclick="event.stopPropagation()">
+      <div class="modal-scan"></div>
+      <div class="corner-tl"></div><div class="corner-tr"></div><div class="corner-bl"></div><div class="corner-br"></div>
 
-      <!-- Top classified banner -->
-      <div class="flex items-center justify-between px-6 py-3 bg-shield-red/8 border-b border-shield-red/15">
+      <!-- Classified banner -->
+      <div class="flex items-center justify-between px-5 py-2.5 border-b border-s-red/15 bg-s-red/5">
         <div class="flex items-center gap-2">
-          <div class="w-2 h-2 rounded-full bg-shield-red animate-pulse"></div>
-          <span class="text-[10px] font-mono tracking-[0.3em] text-shield-red uppercase">Classified — Eyes Only</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-s-red dot-pulse"></span>
+          <span class="text-[11px] tracking-[0.3em] text-s-red uppercase">Classified — Eyes Only</span>
         </div>
-        <span id="detail-id" class="text-[10px] font-mono tracking-wider text-shield-muted"></span>
+        <span id="detail-id" class="text-[11px] tracking-wider text-s-muted font-mono"></span>
       </div>
 
-      <!-- Content -->
-      <div class="p-6 space-y-6">
-        <!-- Title -->
-        <h2 id="detail-title" class="text-2xl font-bold text-shield-bright tracking-wide"></h2>
+      <!-- Body -->
+      <div class="p-6 space-y-5">
 
-        <!-- Badges row -->
-        <div class="flex flex-wrap gap-3">
-          <span id="detail-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold font-mono tracking-wider rounded-full"></span>
-          <span id="detail-priority-badge" class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold font-mono tracking-wider rounded-full"></span>
-          <span id="detail-category-badge" class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold font-mono tracking-wider rounded-full border border-shield-purple/30 bg-shield-purple/10 text-shield-purple"></span>
+        <!-- Title -->
+        <h2 id="detail-title" class="font-display text-2xl font-700 text-s-white tracking-wide" style="font-weight:700"></h2>
+
+        <!-- Badges -->
+        <div class="flex flex-wrap gap-2">
+          <span id="detail-status-badge" class="text-[12px] font-bold tracking-[0.15em] px-3 py-1 rounded-full border"></span>
+          <span id="detail-priority-badge" class="text-[12px] font-bold tracking-[0.15em] px-3 py-1 rounded-full border"></span>
+          <span id="detail-category-badge" class="text-[12px] font-bold tracking-[0.15em] px-3 py-1 rounded-full border border-s-blue/20 bg-s-blue/8 text-s-bluebr"></span>
         </div>
 
         <!-- Description -->
         <div>
-          <label class="block text-[10px] font-mono tracking-[0.25em] text-shield-muted uppercase mb-2">Mission Brief</label>
-          <p id="detail-description" class="text-sm text-shield-text leading-relaxed bg-shield-panel rounded-lg p-4 border border-shield-border font-mono"></p>
+          <span class="lbl">Mission Brief</span>
+          <p id="detail-description" class="text-xs text-s-text leading-relaxed bg-s-panel rounded-lg p-4 border border-s-border"></p>
         </div>
 
         <!-- Info grid -->
-        <div class="grid grid-cols-2 gap-4">
-          <div class="bg-shield-panel rounded-lg p-4 border border-shield-border">
-            <label class="block text-[10px] font-mono tracking-[0.25em] text-shield-muted uppercase mb-1">Assigned Agent</label>
-            <p id="detail-agent" class="text-sm font-semibold text-shield-bright font-mono"></p>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-s-panel rounded-lg p-4 border border-s-border">
+            <span class="lbl">Assigned Agent</span>
+            <p id="detail-agent" class="text-xs font-semibold text-s-bright"></p>
           </div>
-          <div class="bg-shield-panel rounded-lg p-4 border border-shield-border">
-            <label class="block text-[10px] font-mono tracking-[0.25em] text-shield-muted uppercase mb-1">Created At</label>
-            <p id="detail-created" class="text-sm font-semibold text-shield-bright font-mono"></p>
+          <div class="bg-s-panel rounded-lg p-4 border border-s-border">
+            <span class="lbl">Deployed</span>
+            <p id="detail-created" class="text-xs font-semibold text-s-bright"></p>
           </div>
         </div>
 
-        <!-- Status change -->
+        <!-- Assign Agent -->
         <div>
-          <label class="block text-[10px] font-mono tracking-[0.25em] text-shield-muted uppercase mb-2">Update Status</label>
-          <div class="flex items-center gap-3">
-            <select id="detail-status-select" class="status-select flex-1 bg-shield-panel border border-shield-border rounded-lg px-4 py-2.5 text-sm font-mono text-shield-bright focus:outline-none focus:border-shield-blue focus:ring-1 focus:ring-shield-blue/30 transition-colors">
-              <option value="PENDING">⏳ PENDING</option>
-              <option value="ACTIVE">⚡ ACTIVE</option>
-              <option value="COMPLETE">✅ COMPLETE</option>
+          <span class="lbl">Assign Agent</span>
+          <div class="flex gap-2">
+            <select id="detail-agent-select" class="field flex-1">
+              <option value="">— UNASSIGNED —</option>
             </select>
-            <button
-              id="btn-update-status"
-              onclick="updateMissionStatus()"
-              class="px-5 py-2.5 bg-shield-blue/15 text-shield-blue border border-shield-blue/30 rounded-lg text-sm font-mono font-semibold tracking-wider
-                     hover:bg-shield-blue/25 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-shield-blue/30
-                     disabled:opacity-40 disabled:cursor-not-allowed"
-            >
+            <button id="btn-assign-agent" onclick="updateMissionAgent()" class="btn btn-cyan" style="padding: 9px 14px;">
+              ASSIGN
+            </button>
+          </div>
+        </div>
+
+        <!-- Update Status -->
+        <div>
+          <span class="lbl">Update Status</span>
+          <div class="flex gap-2">
+            <select id="detail-status-select" class="field flex-1">
+              <option value="PENDING">PENDING</option>
+              <option value="ACTIVE">ACTIVE</option>
+              <option value="COMPLETE">COMPLETE</option>
+            </select>
+            <button id="btn-update-status" onclick="updateMissionStatus()" class="btn btn-blue" style="padding: 9px 14px;">
               UPDATE
             </button>
           </div>
         </div>
 
         <!-- Actions -->
-        <div class="flex items-center justify-between pt-4 border-t border-shield-border">
-          <button
-            id="btn-delete-mission"
-            onclick="confirmDeleteMission()"
-            class="inline-flex items-center gap-2 px-4 py-2 text-sm font-mono font-semibold tracking-wider text-shield-red
-                   bg-shield-red/8 border border-shield-red/20 rounded-lg
-                   hover:bg-shield-red/15 hover:border-shield-red/40 transition-all duration-200
-                   focus:outline-none focus:ring-2 focus:ring-shield-red/30"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <div class="flex items-center justify-between pt-4 border-t border-s-border">
+          <button onclick="confirmDeleteMission()" class="btn btn-red">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
             </svg>
-            DELETE MISSION
+            DELETE
           </button>
-          <button
-            id="btn-close-detail"
-            onclick="closeDetailModal()"
-            class="px-6 py-2 text-sm font-mono font-semibold tracking-wider text-shield-muted
-                   bg-shield-panel border border-shield-border rounded-lg
-                   hover:text-shield-bright hover:border-shield-muted transition-all duration-200"
-          >
-            CLOSE
-          </button>
+          <button onclick="closeDetailModal()" class="btn btn-ghost">CLOSE</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!-- DELETE CONFIRMATION MODAL                               -->
-  <!-- ════════════════════════════════════════════════════════ -->
-  <div id="modal-delete" class="hidden fixed inset-0 z-[55] modal-backdrop flex items-center justify-center p-4">
-    <div class="w-full max-w-sm bg-shield-dark rounded-xl border border-shield-red/30 shadow-2xl animate-slide-down p-6 text-center" onclick="event.stopPropagation()">
-      <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-shield-red/10 flex items-center justify-center animate-pulse-glow">
-        <svg class="w-7 h-7 text-shield-red" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+  <!-- ═══════════════════════════════════════════════════════
+       DELETE CONFIRMATION MODAL
+  ═══════════════════════════════════════════════════════ -->
+  <div id="modal-delete" class="hidden fixed inset-0 z-[55] backdrop flex items-center justify-center p-4">
+    <div class="relative w-full max-w-sm bg-s-deep rounded-xl border border-s-red/30 shadow-2xl anim-down p-6 text-center" onclick="event.stopPropagation()">
+      <div class="corner-tl" style="border-color:#ef4444"></div><div class="corner-tr" style="border-color:#ef4444"></div>
+      <div class="corner-bl" style="border-color:#ef4444"></div><div class="corner-br" style="border-color:#ef4444"></div>
+      <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-s-red/10 border border-s-red/25 flex items-center justify-center">
+        <svg class="w-6 h-6 text-s-red" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/>
         </svg>
       </div>
-      <h3 class="text-lg font-bold text-shield-bright font-mono tracking-wider mb-2">CONFIRM DELETION</h3>
-      <p class="text-sm text-shield-muted font-mono mb-6">This mission file will be permanently purged from all S.H.I.E.L.D. databases. This action cannot be reversed.</p>
-      <div class="flex gap-3">
-        <button
-          id="btn-cancel-delete"
-          onclick="closeDeleteModal()"
-          class="flex-1 py-2.5 text-sm font-mono font-semibold tracking-wider text-shield-muted
-                 bg-shield-panel border border-shield-border rounded-lg
-                 hover:text-shield-bright hover:border-shield-muted transition-all"
-        >
-          ABORT
-        </button>
-        <button
-          id="btn-confirm-delete"
-          onclick="executeDeletion()"
-          class="flex-1 py-2.5 text-sm font-mono font-semibold tracking-wider text-white
-                 bg-shield-red-dim border border-shield-red rounded-lg
-                 hover:bg-shield-red transition-all
-                 disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          PURGE MISSION
-        </button>
+      <h3 class="text-sm font-bold tracking-[0.2em] text-s-red mb-2">CONFIRM DELETION</h3>
+      <p class="text-xs text-s-muted mb-6 leading-relaxed">This mission file will be permanently purged from all S.H.I.E.L.D. databases. This action cannot be reversed.</p>
+      <div class="flex gap-2">
+        <button onclick="closeDeleteModal()" class="btn btn-ghost flex-1">ABORT</button>
+        <button id="btn-confirm-delete" onclick="executeDeletion()" class="btn btn-red flex-1">PURGE</button>
       </div>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!-- NEW MISSION MODAL                                       -->
-  <!-- ════════════════════════════════════════════════════════ -->
-  <div id="modal-new" class="hidden fixed inset-0 z-50 modal-backdrop flex items-center justify-center p-4">
-    <div class="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-shield-dark rounded-2xl border border-shield-border shadow-2xl animate-slide-down" onclick="event.stopPropagation()">
+  <!-- ═══════════════════════════════════════════════════════
+       NEW MISSION MODAL
+  ═══════════════════════════════════════════════════════ -->
+  <div id="modal-new" class="hidden fixed inset-0 z-50 backdrop flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg max-h-[92vh] overflow-y-auto bg-s-deep rounded-xl border border-s-border shadow-2xl anim-down" onclick="event.stopPropagation()">
+      <div class="corner-tl"></div><div class="corner-tr"></div><div class="corner-bl"></div><div class="corner-br"></div>
 
-      <!-- Header -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-shield-border">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-shield-red/15 flex items-center justify-center">
-            <svg class="w-4 h-4 text-shield-red" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
-            </svg>
-          </div>
-          <div>
-            <h2 class="text-lg font-bold text-shield-bright font-mono tracking-wider">NEW MISSION</h2>
-            <p class="text-[10px] font-mono tracking-[0.2em] text-shield-muted uppercase">Create mission dossier</p>
-          </div>
+      <div class="flex items-center justify-between px-6 py-4 border-b border-s-border">
+        <div>
+          <h2 class="text-sm font-bold tracking-[0.2em] text-s-white">NEW MISSION</h2>
+          <p class="text-[11px] tracking-[0.2em] text-s-muted mt-0.5">CREATE MISSION DOSSIER</p>
         </div>
-        <button onclick="closeNewMissionModal()" class="text-shield-muted hover:text-shield-bright transition-colors p-1">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
+        <button onclick="closeNewMissionModal()" class="text-s-muted hover:text-s-bright transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
 
-      <!-- Form -->
-      <form id="new-mission-form" onsubmit="createMission(event)" class="p-6 space-y-5">
-        <!-- Title -->
+      <form id="new-mission-form" onsubmit="createMission(event)" class="p-6 space-y-4">
         <div>
-          <label for="form-title" class="block text-[10px] font-mono tracking-[0.25em] text-shield-muted uppercase mb-2">Mission Title <span class="text-shield-red">*</span></label>
-          <input
-            type="text" id="form-title" name="title" required
-            placeholder="e.g. Operation Nightfall"
-            class="w-full bg-shield-panel border border-shield-border rounded-lg px-4 py-2.5 text-sm font-mono text-shield-bright
-                   placeholder-shield-muted/50 focus:outline-none focus:border-shield-blue focus:ring-1 focus:ring-shield-blue/30 transition-colors"
-          />
+          <label class="lbl">Mission Title <span class="text-s-red">*</span></label>
+          <input type="text" id="form-title" class="field" placeholder="e.g. Operation Nightfall" required />
         </div>
-
-        <!-- Description -->
         <div>
-          <label for="form-description" class="block text-[10px] font-mono tracking-[0.25em] text-shield-muted uppercase mb-2">Mission Brief</label>
-          <textarea
-            id="form-description" name="description" rows="3"
-            placeholder="Enter mission details..."
-            class="w-full bg-shield-panel border border-shield-border rounded-lg px-4 py-2.5 text-sm font-mono text-shield-bright
-                   placeholder-shield-muted/50 focus:outline-none focus:border-shield-blue focus:ring-1 focus:ring-shield-blue/30 transition-colors resize-none"
-          ></textarea>
+          <label class="lbl">Mission Brief</label>
+          <textarea id="form-description" class="field" rows="3" placeholder="Enter mission details..." style="resize:none"></textarea>
         </div>
-
-        <!-- Category + Priority row -->
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-2 gap-3">
           <div>
-            <label for="form-category" class="block text-[10px] font-mono tracking-[0.25em] text-shield-muted uppercase mb-2">Category <span class="text-shield-red">*</span></label>
-            <select id="form-category" name="category" required
-              class="w-full bg-shield-panel border border-shield-border rounded-lg px-4 py-2.5 text-sm font-mono text-shield-bright
-                     focus:outline-none focus:border-shield-blue focus:ring-1 focus:ring-shield-blue/30 transition-colors">
+            <label class="lbl">Category <span class="text-s-red">*</span></label>
+            <select id="form-category" class="field" required>
               <option value="">Select...</option>
-              <option value="RESCUE">🛟 RESCUE</option>
-              <option value="ASSASSINATION">🎯 ASSASSINATION</option>
-              <option value="INTEL_GATHERING">🔍 INTEL GATHERING</option>
-              <option value="MONITORING">📡 MONITORING</option>
-              <option value="NEUTRALIZATION">⚔️ NEUTRALIZATION</option>
-              <option value="ET_RESPONSE">👽 ET RESPONSE</option>
-              <option value="RECOVERY">📦 RECOVERY</option>
+              <option value="rescue">RESCUE</option>
+              <option value="assassination">ASSASSINATION</option>
+              <option value="intel_gathering">INTEL GATHERING</option>
+              <option value="monitoring">MONITORING</option>
+              <option value="neutralization">NEUTRALIZATION</option>
+              <option value="et_response">ET RESPONSE</option>
+              <option value="recovery">RECOVERY</option>
             </select>
           </div>
           <div>
-            <label for="form-priority" class="block text-[10px] font-mono tracking-[0.25em] text-shield-muted uppercase mb-2">Priority</label>
-            <select id="form-priority" name="priority"
-              class="w-full bg-shield-panel border border-shield-border rounded-lg px-4 py-2.5 text-sm font-mono text-shield-bright
-                     focus:outline-none focus:border-shield-blue focus:ring-1 focus:ring-shield-blue/30 transition-colors">
-              <option value="LOW">🟢 LOW</option>
-              <option value="MEDIUM" selected>🟡 MEDIUM</option>
-              <option value="HIGH">🔴 HIGH</option>
+            <label class="lbl">Priority</label>
+            <select id="form-priority" class="field">
+              <option value="low">LOW</option>
+              <option value="medium" selected>MEDIUM</option>
+              <option value="high">HIGH</option>
             </select>
           </div>
         </div>
-
-        <!-- Agent -->
         <div>
-          <label for="form-agent" class="block text-[10px] font-mono tracking-[0.25em] text-shield-muted uppercase mb-2">Assign Agent</label>
-          <select id="form-agent" name="agentId"
-            class="w-full bg-shield-panel border border-shield-border rounded-lg px-4 py-2.5 text-sm font-mono text-shield-bright
-                   focus:outline-none focus:border-shield-blue focus:ring-1 focus:ring-shield-blue/30 transition-colors">
+          <label class="lbl">Assign Agent</label>
+          <select id="form-agent" class="field">
             <option value="">— UNASSIGNED —</option>
-            <!-- Options populated by JS -->
           </select>
         </div>
-
-        <!-- Submit -->
         <div class="flex gap-3 pt-2">
-          <button
-            type="button"
-            onclick="closeNewMissionModal()"
-            class="flex-1 py-2.5 text-sm font-mono font-semibold tracking-wider text-shield-muted
-                   bg-shield-panel border border-shield-border rounded-lg
-                   hover:text-shield-bright hover:border-shield-muted transition-all"
-          >
-            CANCEL
-          </button>
-          <button
-            id="btn-submit-mission"
-            type="submit"
-            class="flex-1 py-2.5 text-sm font-mono font-semibold tracking-wider text-white
-                   bg-gradient-to-r from-shield-red-dim to-shield-red rounded-lg
-                   hover:from-shield-red hover:to-red-500 transition-all
-                   disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            DEPLOY MISSION
-          </button>
+          <button type="button" onclick="closeNewMissionModal()" class="btn btn-ghost flex-1">CANCEL</button>
+          <button id="btn-submit-mission" type="submit" class="btn btn-blue flex-1">DEPLOY MISSION</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!-- FOOTER                                                  -->
-  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- ═══════════════════════════════════════════════════════
+       ADD AGENT MODAL
+  ═══════════════════════════════════════════════════════ -->
+  <div id="modal-agent" class="hidden fixed inset-0 z-50 backdrop flex items-center justify-center p-4">
+    <div class="relative w-full max-w-sm bg-s-deep rounded-xl border border-s-border shadow-2xl anim-down" onclick="event.stopPropagation()">
+      <div class="corner-tl"></div><div class="corner-tr"></div><div class="corner-bl"></div><div class="corner-br"></div>
+
+      <div class="flex items-center justify-between px-6 py-4 border-b border-s-border">
+        <div>
+          <h2 class="text-sm font-bold tracking-[0.2em] text-s-white">ENLIST AGENT</h2>
+          <p class="text-[11px] tracking-[0.2em] text-s-muted mt-0.5">ADD TO PERSONNEL DATABASE</p>
+        </div>
+        <button onclick="closeAddAgentModal()" class="text-s-muted hover:text-s-bright transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="add-agent-form" onsubmit="addAgent(event)" class="p-6 space-y-4">
+        <div>
+          <label class="lbl">Agent Name <span class="text-s-red">*</span></label>
+          <input type="text" id="form-agent-name" class="field" placeholder="e.g. Nick Fury" required />
+        </div>
+        <div class="flex gap-3 pt-2">
+          <button type="button" onclick="closeAddAgentModal()" class="btn btn-ghost flex-1">CANCEL</button>
+          <button id="btn-submit-agent" type="submit" class="btn btn-cyan flex-1">ENLIST AGENT</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════ -->
   <footer class="mt-8 pb-6 text-center">
-    <p class="text-[10px] font-mono tracking-[0.3em] text-shield-muted/40 uppercase">
+    <p class="text-[11px] tracking-[0.3em] text-s-muted/30 uppercase">
       Strategic Homeland Intervention, Enforcement and Logistics Division — Level 7 Clearance Required
     </p>
   </footer>
 
-
-  <!-- ════════════════════════════════════════════════════════ -->
-  <!-- SCRIPT                                                  -->
-  <!-- ════════════════════════════════════════════════════════ -->
+  <!-- ═══════════════════════════════════════════════════════
+       SCRIPT
+  ═══════════════════════════════════════════════════════ -->
   <script>
-    // ── Configuration ──
+    // ── Config ──────────────────────────────────────────
     const API_BASE = 'http://localhost:9090';
 
-    // ── State ──
+    // ── State ────────────────────────────────────────────
     let missions = [];
-    let agents = [];
+    let agents   = [];
     let currentMissionId = null;
 
-    // ── DOM references ──
-    const $loadingState   = document.getElementById('loading-state');
-    const $errorState     = document.getElementById('error-state');
-    const $errorMessage   = document.getElementById('error-message');
-    const $kanbanBoard    = document.getElementById('kanban-board');
-    const $colPending     = document.getElementById('col-pending');
-    const $colActive      = document.getElementById('col-active');
-    const $colComplete    = document.getElementById('col-complete');
-    const $emptyPending   = document.getElementById('empty-pending');
-    const $emptyActive    = document.getElementById('empty-active');
-    const $emptyComplete  = document.getElementById('empty-complete');
-    const $countPending   = document.getElementById('count-pending');
-    const $countActive    = document.getElementById('count-active');
-    const $countComplete  = document.getElementById('count-complete');
-    const $missionCount   = document.getElementById('mission-count-badge');
-    const $modalDetail    = document.getElementById('modal-detail');
-    const $modalDelete    = document.getElementById('modal-delete');
-    const $modalNew       = document.getElementById('modal-new');
-    const $newForm        = document.getElementById('new-mission-form');
+    // ── DOM ──────────────────────────────────────────────
+    const $ = id => document.getElementById(id);
 
-    // ────────────────────────────────────────────
-    // API Helpers
-    // ────────────────────────────────────────────
-    async function apiFetch(path, options = {}) {
+    // ── API ──────────────────────────────────────────────
+    async function apiFetch(path, opts = {}) {
       const res = await fetch(`${API_BASE}${path}`, {
         headers: { 'Content-Type': 'application/json' },
-        ...options,
+        ...opts,
       });
       if (!res.ok && res.status !== 204) {
-        const errBody = await res.json().catch(() => ({}));
-        throw new Error(errBody.error || `Request failed (${res.status})`);
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `Request failed (${res.status})`);
       }
       if (res.status === 204) return null;
       return res.json();
     }
 
-    async function fetchMissions() {
-      return apiFetch('/missions');
-    }
-
-    async function fetchAgents() {
-      return apiFetch('/agents');
-    }
-
-    // ────────────────────────────────────────────
-    // Init
-    // ────────────────────────────────────────────
+    // ── Init ─────────────────────────────────────────────
     async function initApp() {
       showLoading();
       try {
-        const [missionsData, agentsData] = await Promise.all([fetchMissions(), fetchAgents()]);
-        missions = missionsData || [];
-        agents = agentsData || [];
-        populateAgentDropdown();
+        const [m, a] = await Promise.all([apiFetch('/missions'), apiFetch('/agents')]);
+        missions = m || [];
+        agents   = a || [];
+        populateAgentDropdowns();
         renderBoard();
         showBoard();
-      } catch (err) {
-        showError(err.message);
+      } catch (e) {
+        showError(e.message);
       }
     }
 
     function showLoading() {
-      $loadingState.classList.remove('hidden');
-      $errorState.classList.add('hidden');
-      $kanbanBoard.classList.add('hidden');
+      $('loading-state').classList.remove('hidden');
+      $('error-state').classList.add('hidden');
+      $('kanban-board').classList.add('hidden');
     }
-
     function showBoard() {
-      $loadingState.classList.add('hidden');
-      $errorState.classList.add('hidden');
-      $kanbanBoard.classList.remove('hidden');
+      $('loading-state').classList.add('hidden');
+      $('error-state').classList.add('hidden');
+      $('kanban-board').classList.remove('hidden');
     }
-
     function showError(msg) {
-      $loadingState.classList.add('hidden');
-      $kanbanBoard.classList.add('hidden');
-      $errorState.classList.remove('hidden');
-      $errorMessage.textContent = msg || 'Unable to establish connection with S.H.I.E.L.D. servers.';
+      $('loading-state').classList.add('hidden');
+      $('kanban-board').classList.add('hidden');
+      $('error-state').classList.remove('hidden');
+      $('error-message').textContent = msg || 'Unable to reach S.H.I.E.L.D. servers.';
     }
 
-    // ────────────────────────────────────────────
-    // Rendering
-    // ────────────────────────────────────────────
+    // ── Render Board ─────────────────────────────────────
     function renderBoard() {
-      const pending = missions.filter(m => m.status === 'PENDING');
-      const active = missions.filter(m => m.status === 'ACTIVE');
+      const pending  = missions.filter(m => m.status === 'PENDING');
+      const active   = missions.filter(m => m.status === 'ACTIVE');
       const complete = missions.filter(m => m.status === 'COMPLETE');
 
-      renderColumn($colPending, $emptyPending, pending);
-      renderColumn($colActive, $emptyActive, active);
-      renderColumn($colComplete, $emptyComplete, complete);
+      renderCol('col-pending',  'empty-pending',  pending);
+      renderCol('col-active',   'empty-active',   active);
+      renderCol('col-complete', 'empty-complete', complete);
 
-      $countPending.textContent = pending.length;
-      $countActive.textContent = active.length;
-      $countComplete.textContent = complete.length;
-      $missionCount.textContent = missions.length;
+      $('count-pending').textContent  = pending.length;
+      $('count-active').textContent   = active.length;
+      $('count-complete').textContent = complete.length;
+      $('mission-count').textContent  = missions.length;
+      $('agent-count').textContent    = agents.length;
     }
 
-    function renderColumn(container, emptyEl, items) {
-      container.innerHTML = '';
+    function renderCol(colId, emptyId, items) {
+      const col   = $(colId);
+      const empty = $(emptyId);
+      col.innerHTML = '';
       if (items.length === 0) {
-        emptyEl.classList.remove('hidden');
-        emptyEl.classList.add('flex');
+        empty.classList.remove('hidden');
+        empty.classList.add('flex');
       } else {
-        emptyEl.classList.add('hidden');
-        emptyEl.classList.remove('flex');
-        items.forEach((mission, i) => {
-          const card = createMissionCard(mission, i);
-          container.appendChild(card);
-        });
+        empty.classList.add('hidden');
+        empty.classList.remove('flex');
+        items.forEach((m, i) => col.appendChild(makeCard(m, i)));
       }
     }
 
-    function createMissionCard(mission, index) {
-      const card = document.createElement('div');
-      card.className = 'mission-card relative bg-shield-dark rounded-lg border border-shield-border p-4 pl-5 cursor-pointer';
-      card.style.animationDelay = `${index * 60}ms`;
-      card.classList.add('animate-fade-in-up');
-      card.onclick = () => openDetailModal(mission.missionId);
+    function makeCard(m, idx) {
+      const el = document.createElement('div');
+      el.className = 'mission-card relative bg-s-card rounded-lg border border-s-border p-4 pl-4 cursor-pointer';
+      el.style.animationDelay = `${idx * 50}ms`;
+      el.classList.add('anim-up');
+      el.onclick = () => openDetailModal(m.missionId);
 
-      const priorityColor = getPriorityColor(mission.priority);
-      const categoryInfo = getCategoryInfo(mission.category);
-      const agentDisplay = mission.agentName || 'UNASSIGNED';
-      const agentClass = mission.agentName ? 'text-shield-cyan' : 'text-shield-muted italic';
-      const dateStr = formatDate(mission.createdAt);
+      const pColor = priorityColor(m.priority);
+      const sInfo  = statusInfo(m.status);
+      const cLabel = m.category ? m.category.replace(/_/g, ' ') : '';
+      const agentTxt = m.agentName || 'UNASSIGNED';
+      const agentCls = m.agentName ? 'text-s-cyanbr' : 'text-s-muted italic';
 
-      card.innerHTML = `
-        <!-- Priority bar -->
-        <div class="priority-bar" style="background:${priorityColor}"></div>
-
-        <!-- Title -->
-        <h3 class="text-sm font-semibold text-shield-bright mb-2.5 leading-snug pr-2">${escapeHtml(mission.title)}</h3>
-
-        <!-- Category Badge -->
-        <div class="flex items-center gap-2 mb-3">
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold font-mono tracking-wider rounded
-                       ${categoryInfo.classes}">
-            ${categoryInfo.icon} ${mission.category.replace(/_/g, ' ')}
-          </span>
-          <span class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold font-mono tracking-wider rounded"
-                style="background:${priorityColor}15; color:${priorityColor}; border: 1px solid ${priorityColor}30">
-            ${mission.priority}
-          </span>
+      el.innerHTML = `
+        <div class="pbar" style="background:${pColor}; left:0; top:10px; bottom:10px;"></div>
+        <h3 class="text-xs font-semibold text-s-white mb-2 leading-snug pl-3">${esc(m.title)}</h3>
+        <div class="flex items-center gap-1.5 mb-3 pl-3">
+          <span class="text-[11px] font-bold tracking-wider px-2 py-0.5 rounded border border-s-blue/20 bg-s-blue/8 text-s-dim">${cLabel}</span>
+          <span class="text-[11px] font-bold tracking-wider px-2 py-0.5 rounded" style="background:${pColor}12; color:${pColor}; border: 1px solid ${pColor}25">${m.priority}</span>
+          <span class="text-[11px] font-bold tracking-wider px-2 py-0.5 rounded border ${sInfo.chip}">${m.status}</span>
         </div>
-
-        <!-- Agent + Date -->
-        <div class="flex items-center justify-between text-[11px] font-mono">
-          <span class="${agentClass} flex items-center gap-1">
-            <svg class="w-3 h-3 opacity-60" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/>
-            </svg>
-            ${escapeHtml(agentDisplay)}
+        <div class="flex items-center justify-between text-[12px] pl-3">
+          <span class="${agentCls} flex items-center gap-1">
+            <svg class="w-3 h-3 opacity-50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0"/></svg>
+            ${esc(agentTxt)}
           </span>
-          <span class="text-shield-muted/60">${dateStr}</span>
+          <span class="text-s-muted/50">${fmtDate(m.createdAt)}</span>
         </div>
       `;
-      return card;
+      return el;
     }
 
-    // ────────────────────────────────────────────
-    // Detail Modal
-    // ────────────────────────────────────────────
-    function openDetailModal(missionId) {
-      const mission = missions.find(m => m.missionId === missionId);
-      if (!mission) return;
-      currentMissionId = missionId;
+    // ── Detail Modal ─────────────────────────────────────
+    function openDetailModal(id) {
+      const m = missions.find(x => x.missionId === id);
+      if (!m) return;
+      currentMissionId = id;
 
-      document.getElementById('detail-id').textContent = `MISSION-${String(missionId).padStart(4, '0')}`;
-      document.getElementById('detail-title').textContent = mission.title;
-      document.getElementById('detail-description').textContent = mission.description || 'No mission brief available.';
+      $('detail-id').textContent    = `MISSION-${String(id).padStart(4,'0')}`;
+      $('detail-title').textContent = m.title;
+      $('detail-description').textContent = m.description || 'No mission brief on file.';
+      $('detail-created').textContent = m.createdAt || '—';
 
-      // Status badge
-      const statusBadge = document.getElementById('detail-status-badge');
-      const statusInfo = getStatusInfo(mission.status);
-      statusBadge.className = `inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold font-mono tracking-wider rounded-full ${statusInfo.classes}`;
-      statusBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full ${statusInfo.dotClass}"></span> ${mission.status}`;
+      // Badges
+      const si = statusInfo(m.status);
+      const sb = $('detail-status-badge');
+      sb.className = `text-[12px] font-bold tracking-[0.15em] px-3 py-1 rounded-full border ${si.badge}`;
+      sb.textContent = m.status;
 
-      // Priority badge
-      const priorityBadge = document.getElementById('detail-priority-badge');
-      const priorityColor = getPriorityColor(mission.priority);
-      priorityBadge.style.cssText = `background:${priorityColor}15; color:${priorityColor}; border: 1px solid ${priorityColor}30;`;
-      priorityBadge.textContent = `${mission.priority} PRIORITY`;
+      const pc = priorityColor(m.priority);
+      const pb = $('detail-priority-badge');
+      pb.style.cssText = `background:${pc}12; color:${pc}; border: 1px solid ${pc}25;`;
+      pb.className = 'text-[12px] font-bold tracking-[0.15em] px-3 py-1 rounded-full';
+      pb.textContent = `${m.priority} PRIORITY`;
 
-      // Category badge
-      const catBadge = document.getElementById('detail-category-badge');
-      const catInfo = getCategoryInfo(mission.category);
-      catBadge.textContent = `${catInfo.icon} ${mission.category.replace(/_/g, ' ')}`;
+      $('detail-category-badge').textContent = m.category ? m.category.replace(/_/g,' ') : '';
 
       // Agent
-      const agentEl = document.getElementById('detail-agent');
-      if (mission.agentName) {
-        agentEl.innerHTML = `<span class="text-shield-cyan">${escapeHtml(mission.agentName)}</span>`;
-      } else {
-        agentEl.innerHTML = `<span class="text-shield-muted italic">UNASSIGNED</span>`;
-      }
+      const ae = $('detail-agent');
+      ae.innerHTML = m.agentName
+        ? `<span class="text-s-cyanbr">${esc(m.agentName)}</span>`
+        : `<span class="text-s-muted italic">UNASSIGNED</span>`;
 
-      // Created
-      document.getElementById('detail-created').textContent = mission.createdAt || '—';
+      // Populate agent dropdown and set current
+      populateDetailAgentDropdown(m.agentId);
 
       // Status select
-      document.getElementById('detail-status-select').value = mission.status;
+      $('detail-status-select').value = m.status;
 
-      $modalDetail.classList.remove('hidden');
+      $('modal-detail').classList.remove('hidden');
       document.body.style.overflow = 'hidden';
     }
 
     function closeDetailModal() {
-      $modalDetail.classList.add('hidden');
+      $('modal-detail').classList.add('hidden');
       document.body.style.overflow = '';
       currentMissionId = null;
     }
 
+    function populateDetailAgentDropdown(currentAgentId) {
+      const sel = $('detail-agent-select');
+      sel.innerHTML = '<option value="">— UNASSIGNED —</option>';
+      agents.forEach(a => {
+        const opt = document.createElement('option');
+        opt.value = a.agentId;
+        opt.textContent = a.agentName;
+        if (a.agentId === currentAgentId) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
     async function updateMissionStatus() {
       if (!currentMissionId) return;
-      const newStatus = document.getElementById('detail-status-select').value;
-      const btn = document.getElementById('btn-update-status');
+      const btn = $('btn-update-status');
+      const status = $('detail-status-select').value;
       btn.disabled = true;
       btn.textContent = 'UPDATING...';
-
       try {
         await apiFetch(`/missions/${currentMissionId}/status`, {
           method: 'PATCH',
-          body: JSON.stringify({ status: newStatus }),
+          body: JSON.stringify({ status }),
         });
-        showToast('Mission status updated successfully', 'success');
+        showToast('Status updated', 'success');
         closeDetailModal();
         await refreshBoard();
-      } catch (err) {
-        showToast(`Failed to update: ${err.message}`, 'error');
+      } catch (e) {
+        showToast(`Update failed: ${e.message}`, 'error');
       } finally {
         btn.disabled = false;
         btn.textContent = 'UPDATE';
       }
     }
 
-    // ────────────────────────────────────────────
-    // Delete
-    // ────────────────────────────────────────────
-    function confirmDeleteMission() {
-      $modalDelete.classList.remove('hidden');
-    }
-
-    function closeDeleteModal() {
-      $modalDelete.classList.add('hidden');
-    }
-
-    async function executeDeletion() {
+    async function updateMissionAgent() {
       if (!currentMissionId) return;
-      const btn = document.getElementById('btn-confirm-delete');
+      const btn = $('btn-assign-agent');
+      const agentIdVal = $('detail-agent-select').value;
+      const agentId = agentIdVal ? parseInt(agentIdVal) : null;
       btn.disabled = true;
-      btn.textContent = 'PURGING...';
-
+      btn.textContent = 'ASSIGNING...';
       try {
-        await apiFetch(`/missions/${currentMissionId}`, { method: 'DELETE' });
-        showToast('Mission purged from all databases', 'success');
-        closeDeleteModal();
+        await apiFetch(`/missions/${currentMissionId}/agent`, {
+          method: 'PATCH',
+          body: JSON.stringify({ agentId }),
+        });
+        showToast('Agent assigned', 'success');
         closeDetailModal();
         await refreshBoard();
-      } catch (err) {
-        showToast(`Failed to delete: ${err.message}`, 'error');
+      } catch (e) {
+        showToast(`Assignment failed: ${e.message}`, 'error');
       } finally {
         btn.disabled = false;
-        btn.textContent = 'PURGE MISSION';
+        btn.textContent = 'ASSIGN';
       }
     }
 
-    // ────────────────────────────────────────────
-    // New Mission Modal
-    // ────────────────────────────────────────────
+    // ── Delete ───────────────────────────────────────────
+    function confirmDeleteMission() { $('modal-delete').classList.remove('hidden'); }
+    function closeDeleteModal()      { $('modal-delete').classList.add('hidden'); }
+
+    async function executeDeletion() {
+      if (!currentMissionId) return;
+      const btn = $('btn-confirm-delete');
+      btn.disabled = true;
+      btn.textContent = 'PURGING...';
+      try {
+        await apiFetch(`/missions/${currentMissionId}`, { method: 'DELETE' });
+        showToast('Mission purged', 'success');
+        closeDeleteModal();
+        closeDetailModal();
+        await refreshBoard();
+      } catch (e) {
+        showToast(`Deletion failed: ${e.message}`, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'PURGE';
+      }
+    }
+
+    // ── New Mission ──────────────────────────────────────
     function openNewMissionModal() {
-      $newForm.reset();
-      // Re-select default priority
-      document.getElementById('form-priority').value = 'MEDIUM';
-      $modalNew.classList.remove('hidden');
+      $('new-mission-form').reset();
+      $('form-priority').value = 'medium';
+      $('modal-new').classList.remove('hidden');
       document.body.style.overflow = 'hidden';
-      // Focus the title field
-      setTimeout(() => document.getElementById('form-title').focus(), 100);
+      setTimeout(() => $('form-title').focus(), 80);
     }
-
     function closeNewMissionModal() {
-      $modalNew.classList.add('hidden');
+      $('modal-new').classList.add('hidden');
       document.body.style.overflow = '';
-    }
-
-    function populateAgentDropdown() {
-      const select = document.getElementById('form-agent');
-      // Clear existing agent options (keep "UNASSIGNED")
-      const firstOpt = select.options[0];
-      select.innerHTML = '';
-      select.appendChild(firstOpt);
-      agents.forEach(a => {
-        const opt = document.createElement('option');
-        opt.value = a.agentId;
-        opt.textContent = a.agentName;
-        select.appendChild(opt);
-      });
     }
 
     async function createMission(e) {
       e.preventDefault();
-      const btn = document.getElementById('btn-submit-mission');
+      const btn = $('btn-submit-mission');
       btn.disabled = true;
       btn.textContent = 'DEPLOYING...';
-
-      const title = document.getElementById('form-title').value.trim();
-      const description = document.getElementById('form-description').value.trim();
-      const category = document.getElementById('form-category').value;
-      const priority = document.getElementById('form-priority').value;
-      const agentIdVal = document.getElementById('form-agent').value;
-
+      const agentVal = $('form-agent').value;
       const body = {
-        title,
-        description: description || null,
-        category: category.toLowerCase(),
-        priority: priority.toLowerCase(),
-        agentId: agentIdVal ? parseInt(agentIdVal) : null,
+        title:       $('form-title').value.trim(),
+        description: $('form-description').value.trim() || null,
+        category:    $('form-category').value,
+        priority:    $('form-priority').value,
+        agentId:     agentVal ? parseInt(agentVal) : null,
       };
-
       try {
-        await apiFetch('/missions', {
-          method: 'POST',
-          body: JSON.stringify(body),
-        });
-        showToast('Mission deployed successfully', 'success');
+        await apiFetch('/missions', { method: 'POST', body: JSON.stringify(body) });
+        showToast('Mission deployed', 'success');
         closeNewMissionModal();
         await refreshBoard();
-      } catch (err) {
-        showToast(`Mission deployment failed: ${err.message}`, 'error');
+      } catch (e) {
+        showToast(`Deployment failed: ${e.message}`, 'error');
       } finally {
         btn.disabled = false;
         btn.textContent = 'DEPLOY MISSION';
       }
     }
 
-    // ────────────────────────────────────────────
-    // Refresh
-    // ────────────────────────────────────────────
+    // ── Add Agent ────────────────────────────────────────
+    function openAddAgentModal() {
+      $('add-agent-form').reset();
+      $('modal-agent').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => $('form-agent-name').focus(), 80);
+    }
+    function closeAddAgentModal() {
+      $('modal-agent').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    async function addAgent(e) {
+      e.preventDefault();
+      const btn = $('btn-submit-agent');
+      btn.disabled = true;
+      btn.textContent = 'ENLISTING...';
+      const name = $('form-agent-name').value.trim();
+      try {
+        await apiFetch('/agents', {
+          method: 'POST',
+          body: JSON.stringify({ agentName: name }),
+        });
+        showToast(`Agent ${name} enlisted`, 'success');
+        closeAddAgentModal();
+        // Refresh agents
+        const a = await apiFetch('/agents');
+        agents = a || [];
+        populateAgentDropdowns();
+        $('agent-count').textContent = agents.length;
+      } catch (e) {
+        showToast(`Failed: ${e.message}`, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'ENLIST AGENT';
+      }
+    }
+
+    // ── Dropdowns ────────────────────────────────────────
+    function populateAgentDropdowns() {
+      ['form-agent'].forEach(selId => {
+        const sel = $(selId);
+        const first = sel.options[0];
+        sel.innerHTML = '';
+        sel.appendChild(first);
+        agents.forEach(a => {
+          const o = document.createElement('option');
+          o.value = a.agentId;
+          o.textContent = a.agentName;
+          sel.appendChild(o);
+        });
+      });
+    }
+
+    // ── Refresh ───────────────────────────────────────────
     async function refreshBoard() {
       try {
-        const data = await fetchMissions();
-        missions = data || [];
+        missions = (await apiFetch('/missions')) || [];
         renderBoard();
-      } catch (err) {
-        showToast(`Refresh failed: ${err.message}`, 'error');
+      } catch (e) {
+        showToast(`Refresh failed: ${e.message}`, 'error');
       }
     }
 
-    // ────────────────────────────────────────────
-    // Toast
-    // ────────────────────────────────────────────
-    function showToast(message, type = 'info') {
-      const container = document.getElementById('toast-container');
-      const toast = document.createElement('div');
-
-      const colors = {
-        success: 'border-shield-green/40 bg-shield-green/10 text-shield-green',
-        error: 'border-shield-red/40 bg-shield-red/10 text-shield-red',
-        info: 'border-shield-blue/40 bg-shield-blue/10 text-shield-blue',
+    // ── Toast ────────────────────────────────────────────
+    function showToast(msg, type = 'info') {
+      const container = $('toast-container');
+      const t = document.createElement('div');
+      const styles = {
+        success: 'border-s-cyan/30 bg-s-cyan/8 text-s-cyanbr',
+        error:   'border-s-red/30 bg-s-red/8 text-s-red',
+        info:    'border-s-blue/30 bg-s-blue/8 text-s-bluebr',
       };
-
-      const icons = {
-        success: `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>`,
-        error: `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>`,
-        info: `<svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>`,
-      };
-
-      toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-lg border font-mono text-xs tracking-wider shadow-xl toast-enter ${colors[type]}`;
-      toast.innerHTML = `${icons[type]}<span>${escapeHtml(message)}</span>`;
-
-      container.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.remove('toast-enter');
-        toast.classList.add('toast-exit');
-        setTimeout(() => toast.remove(), 250);
-      }, 3500);
+      t.className = `pointer-events-auto flex items-center gap-2 px-4 py-2.5 rounded-lg border text-[12px] tracking-wider font-mono shadow-xl anim-down ${styles[type] || styles.info}`;
+      t.innerHTML = `<span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background:currentColor"></span><span>${esc(msg)}</span>`;
+      container.appendChild(t);
+      setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity 0.2s'; setTimeout(() => t.remove(), 200); }, 3200);
     }
 
-    // ────────────────────────────────────────────
-    // Utilities
-    // ────────────────────────────────────────────
-    function getPriorityColor(priority) {
-      switch (priority) {
-        case 'HIGH': return '#f85149';
-        case 'MEDIUM': return '#d29922';
-        case 'LOW': return '#3fb950';
-        default: return '#30363d';
-      }
+    // ── Utilities ────────────────────────────────────────
+    function priorityColor(p) {
+      return p === 'HIGH' ? '#f0f6fc' : p === 'MEDIUM' ? '#3b82f6' : '#4a6280';
     }
 
-    function getStatusInfo(status) {
-      switch (status) {
-        case 'PENDING': return { classes: 'bg-shield-amber/10 text-shield-amber border border-shield-amber/20', dotClass: 'bg-shield-amber' };
-        case 'ACTIVE': return { classes: 'bg-shield-blue/10 text-shield-blue border border-shield-blue/20', dotClass: 'bg-shield-blue animate-pulse' };
-        case 'COMPLETE': return { classes: 'bg-shield-green/10 text-shield-green border border-shield-green/20', dotClass: 'bg-shield-green' };
-        default: return { classes: 'bg-shield-muted/10 text-shield-muted', dotClass: 'bg-shield-muted' };
-      }
+    function statusInfo(s) {
+      if (s === 'ACTIVE')   return { chip: 'border-s-cyan/25 bg-s-cyan/8 text-s-cyan', badge: 'border-s-cyan/25 bg-s-cyan/8 text-s-cyan' };
+      if (s === 'COMPLETE') return { chip: 'border-white/15 bg-white/5 text-s-dim',    badge: 'border-white/15 bg-white/5 text-s-dim' };
+      return                       { chip: 'border-s-blue/25 bg-s-blue/8 text-s-blue', badge: 'border-s-blue/25 bg-s-blue/8 text-s-blue' };
     }
 
-    function getCategoryInfo(category) {
-      const map = {
-        'RESCUE':           { icon: '🛟', classes: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' },
-        'ASSASSINATION':    { icon: '🎯', classes: 'bg-red-500/10 text-red-400 border border-red-500/20' },
-        'INTEL_GATHERING':  { icon: '🔍', classes: 'bg-blue-500/10 text-blue-400 border border-blue-500/20' },
-        'MONITORING':       { icon: '📡', classes: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20' },
-        'NEUTRALIZATION':   { icon: '⚔️', classes: 'bg-orange-500/10 text-orange-400 border border-orange-500/20' },
-        'ET_RESPONSE':      { icon: '👽', classes: 'bg-purple-500/10 text-purple-400 border border-purple-500/20' },
-        'RECOVERY':         { icon: '📦', classes: 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/20' },
-      };
-      return map[category] || { icon: '📋', classes: 'bg-gray-500/10 text-gray-400 border border-gray-500/20' };
+    function fmtDate(d) {
+      if (!d) return '—';
+      try { return new Date(d.replace(' ','T')).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' }); }
+      catch { return d; }
     }
 
-    function formatDate(dateStr) {
-      if (!dateStr) return '—';
-      try {
-        // Backend sends "yyyy-MM-dd HH:mm:ss"
-        const d = new Date(dateStr.replace(' ', 'T'));
-        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-      } catch {
-        return dateStr;
-      }
+    function esc(s) {
+      if (!s) return '';
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
     }
 
-    function escapeHtml(str) {
-      if (!str) return '';
-      const div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
-    }
+    // ── Event listeners ───────────────────────────────────
+    $('modal-detail').addEventListener('click', e => { if (e.target === $('modal-detail')) closeDetailModal(); });
+    $('modal-new').addEventListener('click',    e => { if (e.target === $('modal-new'))    closeNewMissionModal(); });
+    $('modal-delete').addEventListener('click', e => { if (e.target === $('modal-delete')) closeDeleteModal(); });
+    $('modal-agent').addEventListener('click',  e => { if (e.target === $('modal-agent'))  closeAddAgentModal(); });
 
-    // ── Close modals on backdrop click ──
-    $modalDetail.addEventListener('click', (e) => { if (e.target === $modalDetail) closeDetailModal(); });
-    $modalNew.addEventListener('click', (e) => { if (e.target === $modalNew) closeNewMissionModal(); });
-    $modalDelete.addEventListener('click', (e) => { if (e.target === $modalDelete) closeDeleteModal(); });
-
-    // ── Close modals on Escape key ──
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        if (!$modalDelete.classList.contains('hidden')) { closeDeleteModal(); return; }
-        if (!$modalDetail.classList.contains('hidden')) { closeDetailModal(); return; }
-        if (!$modalNew.classList.contains('hidden')) { closeNewMissionModal(); return; }
-      }
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      if (!$('modal-delete').classList.contains('hidden')) { closeDeleteModal(); return; }
+      if (!$('modal-detail').classList.contains('hidden')) { closeDetailModal(); return; }
+      if (!$('modal-new').classList.contains('hidden'))    { closeNewMissionModal(); return; }
+      if (!$('modal-agent').classList.contains('hidden'))  { closeAddAgentModal(); return; }
     });
 
-    // ── Launch ──
+    // ── Launch ───────────────────────────────────────────
     initApp();
   </script>
 
